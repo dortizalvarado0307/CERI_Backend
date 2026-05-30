@@ -1,33 +1,24 @@
 import express from 'express';
-import prisma from './config/db.js';
-console.log('SERVER NUEVO');
+
+import userRoutes from './routes/usersRoutes.js';
+import loginRoutes from './routes/loginRoutes.js';
+
 const app = express();
 
 app.use(express.json());
 
-app.get('/', async (_req, res) => {
+app.use('/api/users', userRoutes);
 
-  try {
+app.use('/api/auth', loginRoutes);
 
-    const users = await prisma.user.findMany();
-
-    res.json({
-      prueba: 'ESTE ES EL SERVER NUEVO'
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      ok: false,
-      error: 'Error conectando a la base'
-    });
-
-  }
-
+app.get('/', (_req, res) => {
+  res.json({
+    message: 'API funcionando 🚀'
+  });
 });
 
-app.listen(3000, () => {
-  console.log('Servidor nuevo');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en puerto ${PORT}`);
 });

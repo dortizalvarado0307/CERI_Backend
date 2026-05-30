@@ -6,3 +6,145 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model clasification_meta_population {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  id_meta_population   Int
+  active               Boolean?               @default(true)
+  meta_population      meta_population        @relation(fields: [id_meta_population], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects_commissions projects_commissions[]
+}
+
+model classification_management_area {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  id_management_area   Int
+  active               Boolean?               @default(true)
+  management_area      management_area        @relation(fields: [id_management_area], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects_commissions projects_commissions[]
+}
+
+model management_area {
+  id                             Int                              @id @default(autoincrement())
+  name                           String                           @db.VarChar(255)
+  active                         Boolean?                         @default(true)
+  classification_management_area classification_management_area[]
+}
+
+model meta_population {
+  id                            Int                             @id @default(autoincrement())
+  name                          String                          @db.VarChar(255)
+  active                        Boolean?                        @default(true)
+  clasification_meta_population clasification_meta_population[]
+}
+
+model permission {
+  id              Int               @id @default(autoincrement())
+  name            String?           @db.VarChar(100)
+  active          Boolean           @default(true)
+  role_permission role_permission[]
+}
+
+model person_in_charge {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  lastname             String                 @unique @db.VarChar(255)
+  contact              String                 @db.VarChar(255)
+  active               Boolean?               @default(true)
+  projects_commissions projects_commissions[]
+}
+
+model projects_commissions {
+  id                                Int                               @id @default(autoincrement())
+  name                              String                            @db.VarChar(255)
+  general_objective                 String
+  id_type_initiative                Int
+  id_classification_management_area Int
+  id_clasification_meta_population  Int
+  id_person_in_charge               Int
+  id_university_body                Int
+  id_user                           Int
+  active                            Boolean?                          @default(true)
+  clasification_meta_population     clasification_meta_population     @relation(fields: [id_clasification_meta_population], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  classification_management_area    classification_management_area    @relation(fields: [id_classification_management_area], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person_in_charge                  person_in_charge                  @relation(fields: [id_person_in_charge], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  type_initiative                   type_initiative                   @relation(fields: [id_type_initiative], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  university_body                   university_body                   @relation(fields: [id_university_body], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                              user                              @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects_commissions_region       projects_commissions_region[]
+  projects_commissions_university   projects_commissions_university[]
+}
+
+model projects_commissions_region {
+  id                    Int                  @id @default(autoincrement())
+  id_project_commission Int
+  id_region             Int
+  projects_commissions  projects_commissions @relation(fields: [id_project_commission], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  region                region               @relation(fields: [id_region], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model projects_commissions_university {
+  id                    Int                  @id @default(autoincrement())
+  id_project_commission Int
+  id_university         Int
+  projects_commissions  projects_commissions @relation(fields: [id_project_commission], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  university            university           @relation(fields: [id_university], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model region {
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @db.VarChar(255)
+  active                      Boolean?                      @default(true)
+  projects_commissions_region projects_commissions_region[]
+}
+
+model role {
+  id              Int               @id @default(autoincrement())
+  name            String?           @db.VarChar(100)
+  active          Boolean           @default(true)
+  role_permission role_permission[]
+  user            user[]
+}
+
+model role_permission {
+  id_role       Int
+  id_permission Int
+  active        Boolean    @default(true)
+  permission    permission @relation(fields: [id_permission], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role          role       @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id_role, id_permission])
+}
+
+model type_initiative {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  active               Boolean?               @default(true)
+  projects_commissions projects_commissions[]
+}
+
+model university {
+  id                              Int                               @id @default(autoincrement())
+  name                            String                            @db.VarChar(255)
+  active                          Boolean?                          @default(true)
+  projects_commissions_university projects_commissions_university[]
+}
+
+model university_body {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  active               Boolean?               @default(true)
+  projects_commissions projects_commissions[]
+}
+
+model user {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  email                String                 @unique @db.VarChar(255)
+  password             String                 @db.VarChar(255)
+  id_role              Int
+  active               Boolean?               @default(true)
+  projects_commissions projects_commissions[]
+  role                 role                   @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
