@@ -124,7 +124,7 @@ export const deleteUser = async (
 
     const id = Number(req.params.id);
 
-    await userService.deleteUser(id);
+    await userService.updateUser(id, { active: false });
 
     return res.status(200).json({
       message: 'Usuario desactivado'
@@ -135,7 +135,7 @@ export const deleteUser = async (
     console.error(error);
 
     return res.status(500).json({
-      message: 'Error eliminando usuario'
+      message: 'Error desactivando usuario'
     });
 
   }

@@ -2,6 +2,7 @@ import express from 'express';
 
 import userRoutes from './routes/usersRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
+import universityRoutes from './routes/universityRoutes.js';
 
 const app = express();
 
@@ -10,6 +11,8 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 
 app.use('/api/auth', loginRoutes);
+
+app.use('/api/universities',universityRoutes);
 
 app.get('/', (_req, res) => {
   res.json({
