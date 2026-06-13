@@ -1,7 +1,4 @@
 import prisma from '../config/db.js';
-import { CreateUniversityDTO } from '../dtos/university/createUniversity.js';
-import { updateUniversityDTO } from '../dtos/university/updateUniversity.js';
-
 
 export const getAllUniversities = async () => {
 
