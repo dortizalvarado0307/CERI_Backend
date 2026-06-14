@@ -1,5 +1,4 @@
 import express from 'express';
-
 import userRoutes from './routes/usersRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
 import universityRoutes from './routes/universityRoutes.js';
@@ -11,6 +10,7 @@ import clasificationManagementAreaRoutes from './routes/clasificationManagementA
 import typeInitiativeRouter from './routes/typeInitiativeRouter.js';
 import metaPopulationRoutes from './routes/metaPopulationRoutes.js';
 import clasificationMetaPopulationRoutes from './routes/clasificationMetaPopulationRoutes.js';
+import projectCommissionRoutes from './routes/projectCommissionRoutes.js';
 
 const app = express();
 
@@ -26,10 +26,7 @@ app.use('/api/clasificationManagementArea', clasificationManagementAreaRoutes);
 app.use('/api/typeInitiative', typeInitiativeRouter);
 app.use('/api/metaPopulation', metaPopulationRoutes);
 app.use('/api/clasificationMetaPopulation', clasificationMetaPopulationRoutes);
-
-
-
-
+app.use('/api/projectCommission', projectCommissionRoutes);
 
 
 app.get('/', (_req, res) => {
