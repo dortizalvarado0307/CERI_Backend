@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import userRoutes from './routes/usersRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
 import universityRoutes from './routes/universityRoutes.js';
@@ -13,7 +14,7 @@ import clasificationMetaPopulationRoutes from './routes/clasificationMetaPopulat
 import projectCommissionRoutes from './routes/projectCommissionRoutes.js';
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use('/api/regions', regionRoutes);
 app.use('/api/users', userRoutes);
