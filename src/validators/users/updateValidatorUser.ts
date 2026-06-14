@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { onlyLettersRegex } from '../../utils/validate/validationsText.js';
 
 export const updateUserSchema = z.object({
 
   name: z.string().min(3).regex(
-      /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/,
+      onlyLettersRegex,
       'El nombre solo puede contener letras y espacios').optional(),
 
   email: z.email().optional(),

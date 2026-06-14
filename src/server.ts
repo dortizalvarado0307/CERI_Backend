@@ -6,6 +6,11 @@ import universityRoutes from './routes/universityRoutes.js';
 import universitiesBodyRoutes from './routes/universitiesBodyRoutes.js';
 import regionRoutes from './routes/regionRoutes.js';
 import personInChargeRoutes from './routes/personInChargeRoutes.js';
+import managementAreaRoutes from './routes/managementAreaRoutes.js';
+import clasificationManagementAreaRoutes from './routes/clasificationManagementAreaRoutes.js';
+import typeInitiativeRouter from './routes/typeInitiativeRouter.js';
+import metaPopulationRoutes from './routes/metaPopulationRoutes.js';
+import clasificationMetaPopulationRoutes from './routes/clasificationMetaPopulationRoutes.js';
 
 const app = express();
 
@@ -16,6 +21,11 @@ app.use('/api/auth', loginRoutes);
 app.use('/api/universitiesBody', universitiesBodyRoutes);
 app.use('/api/universities',universityRoutes);
 app.use('/api/personInCharge', personInChargeRoutes);
+app.use('/api/managementArea', managementAreaRoutes);
+app.use('/api/clasificationManagementArea', clasificationManagementAreaRoutes);
+app.use('/api/typeInitiative', typeInitiativeRouter);
+app.use('/api/metaPopulation', metaPopulationRoutes);
+app.use('/api/clasificationMetaPopulation', clasificationMetaPopulationRoutes);
 
 
 
