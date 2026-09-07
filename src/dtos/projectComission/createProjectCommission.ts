@@ -7,6 +7,9 @@ export interface CreateProjectDTO {
   id_person_in_charge: number;
   id_university_body: number;
   id_user: number;
+  codigo?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
 
   regions: number[];
   universities: number[];

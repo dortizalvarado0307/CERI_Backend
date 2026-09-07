@@ -66,6 +66,9 @@ model projects_commissions {
   id_university_body                Int
   id_user                           Int
   active                            Boolean?                          @default(true)
+  codigo                            String?                           @db.VarChar(50)
+  fecha_inicio                      DateTime?                         @db.Date
+  fecha_fin                         DateTime?                         @db.Date
   clasification_meta_population     clasification_meta_population     @relation(fields: [id_clasification_meta_population], references: [id], onDelete: NoAction, onUpdate: NoAction)
   classification_management_area    classification_management_area    @relation(fields: [id_classification_management_area], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person_in_charge                  person_in_charge                  @relation(fields: [id_person_in_charge], references: [id], onDelete: NoAction, onUpdate: NoAction)

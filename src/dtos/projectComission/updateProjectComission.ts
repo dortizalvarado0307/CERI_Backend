@@ -8,6 +8,9 @@ export interface UpdateProjectDTO {
   id_university_body?: number;
   id_user?: number;
   active?: boolean;
+  codigo?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
 
   regions?: number[];
   universities?: number[];

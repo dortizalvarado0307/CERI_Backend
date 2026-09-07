@@ -20,7 +20,7 @@ export const login = async (
         rp => rp.permission.name
       );
 
-  const token = generateToken(
+    const token = generateToken(
       user.id,
       user.id_role,
       permissions
@@ -28,14 +28,26 @@ export const login = async (
 
     return res.status(200).json({
       ok: true,
-      token
+      data: { token }
     });
 
   } catch (error) {
 
-    return res.status(401).json({
+    const message =
+      error instanceof Error ? error.message : 'Error desconocido';
+
+    if (message === 'Usuario no encontrado' || message === 'Contraseña incorrecta') {
+      return res.status(401).json({
+        ok: false,
+        message: 'Credenciales inválidas'
+      });
+    }
+
+    console.error(error);
+
+    return res.status(500).json({
       ok: false,
-      message: 'Credenciales inválidas'
+      message: 'Error en el inicio de sesión'
     });
 
   }

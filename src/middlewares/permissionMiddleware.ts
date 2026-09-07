@@ -15,6 +15,7 @@ export const authorizePermission =
     if (!req.user) {
 
       return res.status(401).json({
+        ok: false,
         message: 'No autenticado'
       });
 
@@ -27,6 +28,7 @@ export const authorizePermission =
     ) {
 
       return res.status(403).json({
+        ok: false,
         message: 'No autorizado'
       });
 

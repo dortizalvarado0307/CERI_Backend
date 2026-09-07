@@ -1,2 +1,2 @@
 export const onlyLettersRegex =
-  /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+  /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'\-]+$/;

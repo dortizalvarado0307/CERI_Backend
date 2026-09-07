@@ -43,13 +43,41 @@ export const login = async (
   return user;
 };
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (
+  page?: number,
+  limit?: number
+) => {
 
-  return await prisma.user.findMany({
-    include: {
-      role: true
-    }
-  });
+  const select = {
+    id: true,
+    email: true,
+    name: true,
+    active: true,
+    id_role: true,
+    role: true
+  };
+
+  if (page && limit) {
+    const [data, total] = await Promise.all([
+      prisma.user.findMany({
+        select,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { id: 'desc' }
+      }),
+      prisma.user.count()
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
+  return await prisma.user.findMany({ select });
 
 };
 
@@ -59,7 +87,12 @@ export const getUserById = async (id: number) => {
     where: {
       id
     },
-    include: {
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      active: true,
+      id_role: true,
       role: true
     }
   });
@@ -88,11 +121,17 @@ export const updateUser = async (
   userData: UpdateUserDTO
 ) => {
 
+  const data: UpdateUserDTO = { ...userData };
+
+  if (data.password) {
+    data.password = await hashPassword(data.password);
+  }
+
   return await prisma.user.update({
     where: {
       id
     },
-    data: userData
+    data
   });
 
 };

@@ -1,171 +1,49 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import * as projectComissionService from '../services/projectComissionService.js';
-import { CreateProjectDTO } from '../dtos/projectComission/createProjectCommission.js';
-import { UpdateProjectDTO } from '../dtos/projectComission/updateProjectComission.js';
-import ProjectFilters from '../types/filters.js';
+import type ProjectFilters from '../types/filters.js';
+import { success, created, notFound, asyncHandler } from '../utils/response.js';
 
-
-export const getAll = async (
-    _req: Request,
-    res: Response
-) => {
-    try {
-        const projectComissions = await projectComissionService.getAllProjectComission();
-        return res.status(200).json({
-            ok: true,
-            data: projectComissions
-        });
-    }
-    catch (error) {
-        return res.status(500).json({
-            ok: false,
-            message: 'Error obteniendo comisiones de proyectos'
-        });
-    }
-}
-
-export const getById = async (
-    req: Request,
-    res: Response
-) => {
-    try {
-        const id = Number(req.params.id);
-        const projectComission = await projectComissionService.getProjectComissionById(id);
-        if (!projectComission) {
-            return res.status(404).json({
-                ok: false,
-                message: 'Comisión de proyecto no encontrada'
-            });
-        }
-        return res.status(200).json({
-            ok: true,
-            data: projectComission
-        });
-    }
-    catch (error) {
-        return res.status(500).json({
-            ok: false,
-            message: 'Error obteniendo comisión de proyecto'
-        });
-    }
-}
-
-export const getByFilters = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-
-    const filters: ProjectFilters = {
-      id_region: req.query.id_region
-        ? req.query.id_region.toString().split(',').map(Number)
-        : undefined,
-
-      id_university: req.query.id_university
-        ? req.query.id_university.toString().split(',').map(Number)
-        : undefined,
-
-      id_type_initiative: req.query.id_type_initiative
-        ? req.query.id_type_initiative.toString().split(',').map(Number)
-        : undefined
-    };
-
-    const projectComissions =
-      await projectComissionService
-        .getProjectComissionByFilters(filters);
-
-    return res.status(200).json({
-      ok: true,
-      data: projectComissions
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    return res.status(500).json({
-      ok: false,
-      message:
-        'Error obteniendo comisiones de proyectos por filtros'
-    });
-
-  }
+const parseNumberArray = (value: unknown): number[] | undefined => {
+  if (!value) return undefined;
+  return value.toString().split(',').map(Number);
 };
 
+export const getAll = asyncHandler(async (req: Request, res: Response) => {
+  const page = req.query.page ? Number(req.query.page) : undefined;
+  const limit = req.query.limit ? Number(req.query.limit) : undefined;
+  const result = await projectComissionService.getAllProjectComission(page, limit);
+  success(res, result);
+});
 
-export const create = async (
-    req: Request,
-    res: Response
-) => {
-    try {
-        const projectComissionData: CreateProjectDTO = req.body;
-        const newProjectComission = await projectComissionService.createProjectComission(projectComissionData);
-        return res.status(201).json({
-            ok: true,
-            data: newProjectComission
-        });
-    }   
-    catch (error) {
-        return res.status(500).json({
-            ok: false,
-            message: 'Error creando comisión de proyecto'
-        });
-    }
-}
+export const getById = asyncHandler(async (req: Request, res: Response) => {
+  const projectComission = await projectComissionService.getProjectComissionById(Number(req.params.id));
+  if (!projectComission) return notFound(res, 'Comisión de proyecto no encontrada');
+  success(res, projectComission);
+});
 
+export const getByFilters = asyncHandler(async (req: Request, res: Response) => {
+  const filters: ProjectFilters = {
+    id_region: parseNumberArray(req.query.id_region),
+    id_university: parseNumberArray(req.query.id_university),
+    id_type_initiative: parseNumberArray(req.query.id_type_initiative),
+  };
+  const projectComissions = await projectComissionService.getProjectComissionByFilters(filters);
+  success(res, projectComissions);
+});
 
-export const update = async (
-    req: Request,
-    res: Response
-) => {
-    try {
-        const id = Number(req.params.id);
-        const projectComissionData: UpdateProjectDTO = req.body;
-        const updatedProjectComission = await projectComissionService.updateProjectComission(id, projectComissionData);
-        if (!updatedProjectComission) {
-            return res.status(404).json({
-                ok: false,
-                message: 'Comisión de proyecto no encontrada'
-            });
-        }
+export const create = asyncHandler(async (req: Request, res: Response) => {
+  const newProjectComission = await projectComissionService.createProjectComission(req.body);
+  created(res, newProjectComission);
+});
 
-        return res.status(200).json({
-            ok: true,   
-            data: updatedProjectComission
-        });
-    }
-    catch (error) {
-        return res.status(500).json({
-            ok: false,
-            message: 'Error actualizando comisión de proyecto'
-        });
-    }
+export const update = asyncHandler(async (req: Request, res: Response) => {
+  const updatedProjectComission = await projectComissionService.updateProjectComission(Number(req.params.id), req.body);
+  if (!updatedProjectComission) return notFound(res, 'Comisión de proyecto no encontrada');
+  success(res, updatedProjectComission);
+});
 
-}
-
-
-export const remove = async (
-    req: Request,
-    res: Response
-) => {
-    try {
-        const id = Number(req.params.id);
-        const deletedProjectComission = await projectComissionService.deleteProjectComission(id);
-        if (!deletedProjectComission) {
-            return res.status(404).json({
-                ok: false,
-                message: 'Comisión de proyecto no encontrada'
-            });
-        }
-        return res.status(200).json({
-            ok: true,
-            data: deletedProjectComission
-        });
-    }
-    catch (error) {
-        return res.status(500).json({
-            ok: false,
-            message: 'Error eliminando comisión de proyecto'
-        });
-    }
-}
+export const remove = asyncHandler(async (req: Request, res: Response) => {
+  const deletedProjectComission = await projectComissionService.deleteProjectComission(Number(req.params.id));
+  if (!deletedProjectComission) return notFound(res, 'Comisión de proyecto no encontrada');
+  success(res, deletedProjectComission);
+});
